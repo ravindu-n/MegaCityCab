@@ -1,0 +1,4 @@
+DB\PasswordHasher.class
+com\mycompany\megacitycabbackend\resources\JakartaEE8Resource.class
+com\mycompany\megacitycabbackend\JakartaRestConfiguration.class
+DB\DatabaseOperation.class
