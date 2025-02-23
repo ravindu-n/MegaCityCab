@@ -1,4 +1,10 @@
+com\mycompany\megacitycabbackend\resources\VehicleResource.class
+User\UserOperations.class
+com\mycompany\megacitycabbackend\resources\UserResource.class
+User\Users.class
 DB\PasswordHasher.class
 com\mycompany\megacitycabbackend\resources\JakartaEE8Resource.class
 com\mycompany\megacitycabbackend\JakartaRestConfiguration.class
 DB\DatabaseOperation.class
+Vehicle\VehicleOperations.class
+Vehicle\Vehicles.class
