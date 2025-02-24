@@ -13,12 +13,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 /**
  *
  * @author ravin
  */
 public class UserOperations {
-     private static final BCryptPasswordEncoder encoder;
+
+    private static final BCryptPasswordEncoder encoder;
 
     // Static Block for Initializing BCryptPasswordEncoder
     static {
@@ -31,12 +33,12 @@ public class UserOperations {
         }
         encoder = tempEncoder;
     }
-    
+
     // ✅ Create - Add New User
     public static int addAccount(Users user) {
         String query = "INSERT INTO users (email, username, pword, urole, name, address, phone, nic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseOperation.connect();  // Fix: Changed from DBConnection to DatabaseOperation
-             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DatabaseOperation.connect(); // Fix: Changed from DBConnection to DatabaseOperation
+                 PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getUsername());
             stmt.setString(3, encoder.encode(user.getPword()));  // Encrypt Password
@@ -44,7 +46,7 @@ public class UserOperations {
             stmt.setString(7, user.getPhone());
             stmt.setString(8, user.getNic());
             stmt.executeUpdate();
-            
+
             // Get Generated User ID
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
@@ -55,7 +57,7 @@ public class UserOperations {
         }
         return -1; // Error case
     }
-    
+
     // ✅ Read - Get All Users (Fixed Column Mapping)
     public static List<Users> getAllAccounts() {
         List<Users> userList = new ArrayList<>();
@@ -68,7 +70,7 @@ public class UserOperations {
                         rs.getString("email"),
                         rs.getString("phone"),
                         rs.getString("nic"),
-                        rs.getString("pword"), 
+                        rs.getString("pword"),
                         rs.getString("urole"),
                         rs.getString("address")
                 ));
@@ -78,12 +80,11 @@ public class UserOperations {
         }
         return userList;
     }
-    
+
     // ✅ Delete - Remove User
     public static int deleteAccount(int id) {
         String query = "DELETE FROM users WHERE Id=?";
-        try (Connection conn = DatabaseOperation.connect();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate();
         } catch (SQLException e) {
@@ -91,26 +92,25 @@ public class UserOperations {
         }
         return -1; // Error case
     }
-    
+
     // ✅ Validate Login
     public static Users validateLogin(String email, String rawPassword) { // Fix: Changed return type from User to Users
         String query = "SELECT * FROM users WHERE email = ?";
-        try (Connection conn = DatabaseOperation.connect();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 String storedPassword = rs.getString("pword");  // Fix: Ensure correct column name
                 if (encoder.matches(rawPassword, storedPassword)) {
                     return new Users(
-                        rs.getInt("Id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        null,  // Do not return password for security
-                        rs.getString("urole"),
-                        rs.getString("phone"),
-                        rs.getString("nic"),
-                        rs.getString("address")
+                            rs.getInt("Id"),
+                            rs.getString("email"),
+                            rs.getString("username"),
+                            null, // Do not return password for security
+                            rs.getString("urole"),
+                            rs.getString("phone"),
+                            rs.getString("nic"),
+                            rs.getString("address")
                     );
                 }
             }
