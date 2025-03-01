@@ -12,30 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 public class PasswordHasher {
 
-    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    // Method to hash a password
-    public static String hashPassword(String password) {
-        return encoder.encode(password);
-    }
-
-    // Method to verify a password
-    public static boolean verifyPassword(String rawPassword, String hashedPassword) {
-        return encoder.matches(rawPassword, hashedPassword);
-    }
-
     public static void main(String[] args) {
-        // Example: Hashing a password
-        String plainPassword = "password123";
-        String hashedPassword = hashPassword(plainPassword);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String adminPassword = encoder.encode("admin123");
+        String userPassword = encoder.encode("customer123");
 
-        System.out.println("Original: " + plainPassword);
-        System.out.println("Hashed: " + hashedPassword);
-
-        // Example: Verifying password
-        System.out.println("Password Match: " + verifyPassword(plainPassword, hashedPassword));
-        
-        System.out.println(hashPassword("admin123"));
-
+        System.out.println("Admin Hashed Password: " + adminPassword);
+        System.out.println("Customer Hashed Password: " + userPassword);
     }
 }

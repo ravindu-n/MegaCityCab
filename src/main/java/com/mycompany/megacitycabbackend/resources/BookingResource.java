@@ -6,17 +6,27 @@ package com.mycompany.megacitycabbackend.resources;
 
 import Booking.BookingOperations;
 import Booking.Bookings;
+import DB.DatabaseOperation;
 import com.google.gson.Gson;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author ravin
  */
 @Path("bookings")
 public class BookingResource {
+
     private final Gson gson = new Gson();
 
     // ✅ Add a New Booking
@@ -41,8 +51,33 @@ public class BookingResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllBookings() {
-        List<Bookings> bookings = BookingOperations.getAllBookings();
-        return Response.ok(gson.toJson(bookings)).build();
+        List<Map<String, Object>> bookingsList = new ArrayList<>();
+
+        String query = "SELECT b.Id, u.username AS customerName, b.pickup_location, b.dropoff_location, b.bStatus "
+                + "FROM bookings b "
+                + "JOIN users u ON b.customer_id = u.Id "
+                + "WHERE u.urole = 'Customer'";  // ✅ Ensures only customers appear
+
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Map<String, Object> booking = new HashMap<>();
+                booking.put("id", rs.getInt("Id"));
+                booking.put("customerName", rs.getString("customerName")); // ✅ Get only Customers
+                booking.put("pickupLocation", rs.getString("pickup_location"));
+                booking.put("dropoffLocation", rs.getString("dropoff_location"));
+                booking.put("bStatus", rs.getString("bStatus"));
+
+                bookingsList.add(booking);
+            }
+
+            return Response.ok(new Gson().toJson(bookingsList)).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\": \"Failed to fetch bookings\"}")
+                    .build();
+        }
     }
 
     // ✅ Delete Booking by ID

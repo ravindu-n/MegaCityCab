@@ -101,15 +101,15 @@ public class UserOperations {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 String storedPassword = rs.getString("pword");  // Fix: Ensure correct column name
-                if (encoder.matches(rawPassword, storedPassword)) {
+                if (storedPassword != null && encoder.matches(rawPassword, storedPassword)) {
                     return new Users(
                             rs.getInt("Id"),
-                            rs.getString("email"),
                             rs.getString("username"),
-                            null, // Do not return password for security
-                            rs.getString("urole"),
+                            rs.getString("email"),
                             rs.getString("phone"),
-                            rs.getString("nic"),
+                            rs.getString("nic"), // Correct field placement
+                            null, // Do not return password for security
+                            rs.getString("urole"), // ✅ Fetch correct role
                             rs.getString("address")
                     );
                 }

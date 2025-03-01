@@ -2,7 +2,6 @@ D:\Topup\MegaCityCabBackend\src\main\java\com\mycompany\megacitycabbackend\resou
 D:\Topup\MegaCityCabBackend\src\main\java\com\mycompany\megacitycabbackend\resources\VehicleResource.java
 D:\Topup\MegaCityCabBackend\src\main\java\com\mycompany\megacitycabbackend\resources\BookingResource.java
 D:\Topup\MegaCityCabBackend\src\main\java\com\mycompany\megacitycabbackend\JakartaRestConfiguration.java
-D:\Topup\MegaCityCabBackend\src\main\java\User\LoginService.java
 D:\Topup\MegaCityCabBackend\src\main\java\Vehicle\Vehicles.java
 D:\Topup\MegaCityCabBackend\src\main\java\DB\DatabaseOperation.java
 D:\Topup\MegaCityCabBackend\src\main\java\Vehicle\VehicleOperations.java
@@ -10,7 +9,6 @@ D:\Topup\MegaCityCabBackend\src\main\java\com\mycompany\megacitycabbackend\resou
 D:\Topup\MegaCityCabBackend\src\main\java\Driver\Drivers.java
 D:\Topup\MegaCityCabBackend\src\main\java\User\Users.java
 D:\Topup\MegaCityCabBackend\src\main\java\User\UserOperations.java
-D:\Topup\MegaCityCabBackend\src\main\java\com\mycompany\megacitycabbackend\resources\LoginResource.java
 D:\Topup\MegaCityCabBackend\src\main\java\Booking\BookingOperations.java
 D:\Topup\MegaCityCabBackend\src\main\java\com\mycompany\megacitycabbackend\resources\UserResource.java
 D:\Topup\MegaCityCabBackend\src\main\java\DB\PasswordHasher.java

@@ -73,23 +73,41 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response validateLogin(String json) {
-        Users user = gson.fromJson(json, Users.class);
+        try {
+            System.out.println("🔹 Received Login Request: " + json);
 
-        // Ensure email and password are not null
-        if (user.getEmail() == null || user.getPword() == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"message\": \"Email and Password are required!\"}")
+            Gson gson = new Gson();
+            Users user = gson.fromJson(json, Users.class);
+
+            // Ensure email and password are provided
+            if (user.getEmail() == null || user.getPword() == null) {
+                System.out.println("❌ Missing email or password");
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\": \"Email and Password are required!\"}")
+                        .build();
+            }
+
+            System.out.println("🔹 Checking login for email: " + user.getEmail());
+
+            Users validUser = UserOperations.validateLogin(user.getEmail(), user.getPword());
+
+            if (validUser != null) {
+                String trimmedRole = validUser.getUrole().trim();
+                System.out.println("✅ User Authenticated: " + validUser.getEmail() + " | Role: " + trimmedRole);
+
+                return Response.ok("{\"message\": \"Login successful!\", \"id\": " + validUser.getId()
+                        + ", \"role\": \"" + trimmedRole + "\"}").build();
+            } else {
+                System.out.println("❌ Invalid Credentials for: " + user.getEmail());
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\": \"Invalid email or password!\"}")
+                        .build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the error in GlassFish logs
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\": \"Internal Server Error!\"}")
                     .build();
         }
-
-        Users validUser = UserOperations.validateLogin(user.getEmail(), user.getPword());
-
-        if (validUser != null) {
-            return Response.ok("{\"message\": \"Login successful!\", \"id\": " + validUser.getId() + ", \"role\": \"" + validUser.getUrole() + "\"}").build();
-        }
-
-        return Response.status(Response.Status.UNAUTHORIZED)
-                .entity("{\"message\": \"Invalid email or password!\"}")
-                .build();
     }
 }
