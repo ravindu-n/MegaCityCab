@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Dashboard | MegaCityCab</title>
+        <link rel="stylesheet" href="/CSS/styles.css">
+        <script src="js/main.js" defer></script>
+    </head>
+    <body onload="checkUserSession(); fetchUserDetails(localStorage.getItem('userId'));">
+        <header>
+            <h1>Welcome to MegaCityCab</h1>
+            <nav>
+                <a href="user_dashboard.html">Profile</a>
+                <a href="bookings.html">My Bookings</a>
+                <button onclick="logoutUser()">Logout</button>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Your Profile</h2>
+            <table id="userProfile">
+                <tr><th>Username:</th><td id="username"></td></tr>
+                <tr><th>Email:</th><td id="email"></td></tr>
+                <tr><th>Phone:</th><td id="phone"></td></tr>
+                <tr><th>Address:</th><td id="address"></td></tr>
+            </table>
+        </main>
+
+        <script>
+            async function displayUserProfile() {
+                const userId = localStorage.getItem("userId");
+                if (!userId)
+                    return;
+
+                const user = await fetchUserDetails(userId);
+                document.getElementById("username").textContent = user.username;
+                document.getElementById("email").textContent = user.email;
+                document.getElementById("phone").textContent = user.phone;
+                document.getElementById("address").textContent = user.address;
+            }
+
+            displayUserProfile();
+        </script>
+    </body>
+</html>

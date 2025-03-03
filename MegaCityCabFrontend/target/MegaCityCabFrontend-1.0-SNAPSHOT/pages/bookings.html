@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bookings | MegaCityCab</title>
+        <link rel="stylesheet" href="../CSS/styles.css">
+        <script src="../js/main.js" defer></script>
+    </head>
+    <body onload="checkUserSession(); fetchBookings();">
+        <header>
+            <h1>Manage Bookings</h1>
+            <nav>
+                <a href="admin_dashboard.html">Users</a>
+                <a href="bookings.html">Bookings</a>
+                <a href="vehicles.html">Vehicles</a>
+                <a href="drivers.html">Drivers</a>
+                <button onclick="logoutUser()">Logout</button>
+            </nav>
+        </header>
+
+        <main>
+            <h2>All Bookings</h2>
+            <table id="bookingsTable">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Pickup Location</th>
+                        <th>Dropoff Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Bookings will be inserted here dynamically -->
+                </tbody>
+            </table>
+        </main>
+
+        <script>
+            async function fetchBookings() {
+                try {
+                    const response = await fetch("http://localhost:8080/MegaCityCabBackend/api/bookings");
+                    const bookings = await response.json();
+                    
+                    console.log("📌 Booking Data Received:", bookings);
+
+                    const tableBody = document.getElementById("bookingsTable").querySelector("tbody");
+                    tableBody.innerHTML = "";
+
+                    bookings.forEach(booking => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${booking.id}</td>
+                            <td>${booking.customerName}</td>
+                            <td>${booking.pickupLocation}</td>
+                            <td>${booking.dropoffLocation}</td>
+                            <td>${booking.bStatus}</td>
+                            <td><button onclick="cancelBooking(${booking.id})">Cancel</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error("Error fetching bookings:", error);
+                }
+            }
+
+            async function cancelBooking(bookingId) {
+                try {
+                    const response = await fetch(`http://localhost:8080/MegaCityCabBackend/api/bookings/${bookingId}`, {
+                        method: "DELETE"
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert("Booking cancelled successfully!");
+                        fetchBookings(); // Refresh bookings list
+                    } else {
+                        alert(data.message || "Failed to cancel booking!");
+                    }
+                } catch (error) {
+                    console.error("Error cancelling booking:", error);
+                }
+            }
+        </script>
+    </body>
+</html>

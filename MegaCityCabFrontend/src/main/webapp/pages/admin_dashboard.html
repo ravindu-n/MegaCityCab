@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Dashboard | MegaCityCab</title>
+        <link rel="stylesheet" href="../CSS/styles.css">
+        <script src="../js/main.js" defer></script>
+    </head>
+    <body onload="checkUserSession(); fetchUsers();">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <nav>
+                <a href="admin_dashboard.html">Users</a>
+                <a href="bookings.html">Bookings</a>
+                <a href="vehicles.html">Vehicles</a>
+                <a href="drivers.html">Drivers</a>
+                <button onclick="logoutUser()">Logout</button>
+            </nav>
+        </header>
+
+        <main>
+            <h2>All Users</h2>
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- User data will be inserted here dynamically -->
+                </tbody>
+            </table>
+        </main>
+
+        <script>
+            async function displayUsers() {
+                try {
+                    const users = await fetchUsers();  // Calls fetchUsers() from main.js
+
+                    if (!users) {
+                        console.error("❌ No users received!");
+                        return;
+                    }
+
+                    const tableBody = document.getElementById("usersTable").querySelector("tbody");
+                    tableBody.innerHTML = "";
+
+                    users.forEach(user => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.urole}</td>
+                    <td><button onclick="deleteUser(${user.id})">Delete</button></td>
+                `;
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error("❌ Error displaying users:", error);
+                }
+            }
+
+            // ✅ Ensure function is called after DOM is loaded
+            document.addEventListener("DOMContentLoaded", () => {
+                displayUsers();
+            });
+        </script>
+    </body>
+</html>
