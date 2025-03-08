@@ -11,12 +11,14 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+
 /**
  *
  * @author ravin
  */
 @Path("vehicles")
 public class VehicleResource {
+
     private final Gson gson = new Gson();
 
     // ✅ Add a New Vehicle
@@ -43,6 +45,26 @@ public class VehicleResource {
     public Response getAllVehicles() {
         List<Vehicles> vehicles = VehicleOperations.getAllVehicles();
         return Response.ok(gson.toJson(vehicles)).build();
+    }
+
+    @GET
+    @Path("/available")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableVehicles() {
+        try {
+            List<Vehicles> vehicles = VehicleOperations.getAvailableVehicles();
+            if (vehicles == null || vehicles.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("{\"message\": \"No available vehicles found\"}")
+                        .build();
+            }
+            return Response.ok(new Gson().toJson(vehicles)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\": \"Error fetching vehicles: " + e.getMessage() + "\"}")
+                    .build();
+        }
     }
 
     // ✅ Delete Vehicle by ID

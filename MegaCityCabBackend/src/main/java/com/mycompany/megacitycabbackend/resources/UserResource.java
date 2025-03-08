@@ -7,6 +7,7 @@ package com.mycompany.megacitycabbackend.resources;
 import User.UserOperations;
 import User.Users;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,18 +40,29 @@ public class UserResource {
                 .build();
     }
 
-    // ✅ Get All Users
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllUsers() {
         List<Users> users = UserOperations.getAllAccounts();
-
-        // ✅ Remove passwords from response for security
         for (Users user : users) {
-            user.setPword(null);
+            user.setPword(null); // Hide password
         }
+        return Response.ok(new Gson().toJson(users)).build();
+    }
 
-        return Response.ok(gson.toJson(users)).build();
+    // ✅ Get User by ID
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserById(@PathParam("id") int id) {
+        Users user = UserOperations.getUserById(id);
+        if (user != null) {
+            user.setPword(null); // Remove password for security
+            return Response.ok(new Gson().toJson(user)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND)
+                .entity("{\"message\": \"User not found\"}")
+                .build();
     }
 
     // ✅ Delete User
@@ -73,40 +85,29 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response validateLogin(String json) {
-        try {
-            System.out.println("🔹 Received Login Request: " + json);
+        System.out.println("🔹 Received Login Request: " + json);
 
-            Gson gson = new Gson();
-            Users user = gson.fromJson(json, Users.class);
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson(json, JsonObject.class); // Use JsonObject to extract fields
 
-            // Ensure email and password are provided
-            if (user.getEmail() == null || user.getPword() == null) {
-                System.out.println("❌ Missing email or password");
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\": \"Email and Password are required!\"}")
-                        .build();
-            }
+        String email = jsonObject.has("email") ? jsonObject.get("email").getAsString() : null;
+        String password = jsonObject.has("password") ? jsonObject.get("password").getAsString() : null; // 🔹 Change to "password"
 
-            System.out.println("🔹 Checking login for email: " + user.getEmail());
+        if (email == null || password == null) {
+            System.out.println("❌ Missing email or password");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\": \"Email and Password are required!\"}")
+                    .build();
+        }
 
-            Users validUser = UserOperations.validateLogin(user.getEmail(), user.getPword());
+        Users validUser = UserOperations.validateLogin(email, password);
 
-            if (validUser != null) {
-                String trimmedRole = validUser.getUrole().trim();
-                System.out.println("✅ User Authenticated: " + validUser.getEmail() + " | Role: " + trimmedRole);
-
-                return Response.ok("{\"message\": \"Login successful!\", \"id\": " + validUser.getId()
-                        + ", \"role\": \"" + trimmedRole + "\"}").build();
-            } else {
-                System.out.println("❌ Invalid Credentials for: " + user.getEmail());
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\": \"Invalid email or password!\"}")
-                        .build();
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the error in GlassFish logs
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\": \"Internal Server Error!\"}")
+        if (validUser != null) {
+            return Response.ok("{\"message\": \"Login successful!\", \"id\": " + validUser.getId()
+                    + ", \"urole\": \"" + validUser.getUrole().trim() + "\"}").build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\": \"Invalid email or password!\"}")
                     .build();
         }
     }

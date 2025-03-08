@@ -51,33 +51,22 @@ public class BookingResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllBookings() {
-        List<Map<String, Object>> bookingsList = new ArrayList<>();
+        List<Bookings> bookings = BookingOperations.getAllBookings();
+        return Response.ok(gson.toJson(bookings)).build();
+    }
 
-        String query = "SELECT b.Id, u.username AS customerName, b.pickup_location, b.dropoff_location, b.bStatus "
-                + "FROM bookings b "
-                + "JOIN users u ON b.customer_id = u.Id "
-                + "WHERE u.urole = 'Customer'";  // ✅ Ensures only customers appear
-
-        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Map<String, Object> booking = new HashMap<>();
-                booking.put("id", rs.getInt("Id"));
-                booking.put("customerName", rs.getString("customerName")); // ✅ Get only Customers
-                booking.put("pickupLocation", rs.getString("pickup_location"));
-                booking.put("dropoffLocation", rs.getString("dropoff_location"));
-                booking.put("bStatus", rs.getString("bStatus"));
-
-                bookingsList.add(booking);
-            }
-
-            return Response.ok(new Gson().toJson(bookingsList)).build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\": \"Failed to fetch bookings\"}")
+    // ✅ Get Bookings by Customer ID
+    @GET
+    @Path("/customer/{customerId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBookingsByCustomer(@PathParam("customerId") int customerId) {
+        List<Bookings> bookings = BookingOperations.getBookingsByCustomer(customerId);
+        if (bookings.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\": \"No bookings found for this customer\"}")
                     .build();
         }
+        return Response.ok(gson.toJson(bookings)).build();
     }
 
     // ✅ Delete Booking by ID
@@ -116,5 +105,14 @@ public class BookingResource {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity("{\"message\": \"Failed to update booking status\"}")
                 .build();
+    }
+
+    // ✅ Get Bookings by Driver ID
+    @GET
+    @Path("/driver/{driverId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBookingsByDriver(@PathParam("driverId") int driverId) {
+        List<Bookings> bookings = BookingOperations.getBookingsByDriver(driverId);
+        return Response.ok(new Gson().toJson(bookings)).build();
     }
 }

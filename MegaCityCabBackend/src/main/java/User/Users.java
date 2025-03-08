@@ -17,12 +17,15 @@ public class Users {
     private String pword; 
     private String urole;
     private String address;
+    private String licenseNumber;  // ✅ Added
+    private String dStatus;        // ✅ Added
+    private Integer vehicleId;     // ✅ Added (nullable)
 
     // ✅ Default Constructor (Needed for JSON parsing & frameworks)
     public Users() {}
 
     // ✅ Constructor with All Fields
-    public Users(int id, String username, String email, String phone, String nic, String pword, String urole, String address) {
+    public Users(int id, String username, String email, String phone, String nic, String pword, String urole, String address, String licenseNumber, String dStatus, Integer vehicleId) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -31,6 +34,9 @@ public class Users {
         this.pword = pword;
         this.urole = urole;
         this.address = address;
+        this.licenseNumber = licenseNumber;
+        this.dStatus = dStatus;
+        this.vehicleId = vehicleId;
     }
 
     // ✅ Getters and Setters
@@ -57,6 +63,15 @@ public class Users {
     
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    
+    public String getLicenseNumber() { return licenseNumber; }
+    public void setLicenseNumber(String licenseNumber) { this.licenseNumber = licenseNumber; }
+
+    public String getDStatus() { return dStatus; }
+    public void setDStatus(String dStatus) { this.dStatus = dStatus; }
+
+    public Integer getVehicleId() { return vehicleId; }
+    public void setVehicleId(Integer vehicleId) { this.vehicleId = vehicleId; }
     
     // ✅ Override toString() for debugging
     @Override

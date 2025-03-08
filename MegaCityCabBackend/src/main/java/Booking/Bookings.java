@@ -9,9 +9,9 @@ package Booking;
  * @author ravin
  */
 public class Bookings {
+
     private int id;
     private int customerId;
-    private Integer driverId;  // Nullable
     private Integer vehicleId; // Nullable
     private String pickupLocation;
     private String dropoffLocation;
@@ -19,16 +19,17 @@ public class Bookings {
     private String pickupTime;
     private double fare;
     private String bStatus;
+    private String customerName; // ✅ New field for frontend display
 
     // ✅ Default Constructor (Needed for JSON parsing)
     public Bookings() {}
 
-    // ✅ Constructor with All Fields
-    public Bookings(int id, int customerId, Integer driverId, Integer vehicleId, String pickupLocation, 
-                    String dropoffLocation, String bookingDate, String pickupTime, double fare, String bStatus) {
+    // ✅ Updated Constructor to match the parameters in BookingOperations.java
+    public Bookings(int id, int customerId, Integer vehicleId, String pickupLocation, 
+                    String dropoffLocation, String bookingDate, String pickupTime, 
+                    double fare, String bStatus, String customerName) {
         this.id = id;
         this.customerId = customerId;
-        this.driverId = driverId;
         this.vehicleId = vehicleId;
         this.pickupLocation = pickupLocation;
         this.dropoffLocation = dropoffLocation;
@@ -36,6 +37,7 @@ public class Bookings {
         this.pickupTime = pickupTime;
         this.fare = fare;
         this.bStatus = bStatus;
+        this.customerName = customerName; // ✅ Assigning the new field
     }
 
     // ✅ Getters and Setters
@@ -44,9 +46,6 @@ public class Bookings {
 
     public int getCustomerId() { return customerId; }
     public void setCustomerId(int customerId) { this.customerId = customerId; }
-
-    public Integer getDriverId() { return driverId; }
-    public void setDriverId(Integer driverId) { this.driverId = driverId; }
 
     public Integer getVehicleId() { return vehicleId; }
     public void setVehicleId(Integer vehicleId) { this.vehicleId = vehicleId; }
@@ -69,13 +68,15 @@ public class Bookings {
     public String getbStatus() { return bStatus; }
     public void setbStatus(String bStatus) { this.bStatus = bStatus; }
 
+    public String getCustomerName() { return customerName; } // ✅ Getter for customer name
+    public void setCustomerName(String customerName) { this.customerName = customerName; } // ✅ Setter for customer name
+
     // ✅ Override toString() for Debugging
     @Override
     public String toString() {
         return "Bookings{" +
                 "id=" + id +
                 ", customerId=" + customerId +
-                ", driverId=" + driverId +
                 ", vehicleId=" + vehicleId +
                 ", pickupLocation='" + pickupLocation + '\'' +
                 ", dropoffLocation='" + dropoffLocation + '\'' +
@@ -83,6 +84,7 @@ public class Bookings {
                 ", pickupTime='" + pickupTime + '\'' +
                 ", fare=" + fare +
                 ", bStatus='" + bStatus + '\'' +
+                ", customerName='" + customerName + '\'' +
                 '}';
     }
 }

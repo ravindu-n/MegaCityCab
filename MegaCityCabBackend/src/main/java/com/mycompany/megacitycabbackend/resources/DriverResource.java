@@ -6,6 +6,8 @@ package com.mycompany.megacitycabbackend.resources;
 
 import Driver.DriverOperations;
 import Driver.Drivers;
+import User.UserOperations;
+import User.Users;
 import com.google.gson.Gson;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,6 +20,7 @@ import java.util.List;
  */
 @Path("drivers")
 public class DriverResource {
+
     private final Gson gson = new Gson();
 
     // ✅ Add a New Driver
@@ -27,7 +30,25 @@ public class DriverResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createDriver(String json) {
         Drivers driver = gson.fromJson(json, Drivers.class);
-        int driverId = DriverOperations.addDriver(driver);
+
+        // First, create the user entry
+        Users newUser = new Users();
+        newUser.setUsername(driver.getdName());
+        newUser.setEmail(driver.getPhone() + "@megacitycab.com"); // Dummy email since drivers might not have emails
+        newUser.setPword("default123"); // Default password, should be changed later
+        newUser.setUrole("Driver");
+        newUser.setPhone(driver.getPhone());
+        newUser.setNic(driver.getNic());
+
+        int userId = UserOperations.addAccount(newUser);
+        if (userId < 0) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\": \"Failed to create user account for driver\"}")
+                    .build();
+        }
+
+        // Now, create the driver entry
+        int driverId = DriverOperations.addDriver(driver, userId);
         if (driverId > 0) {
             return Response.status(Response.Status.CREATED)
                     .entity("{\"message\": \"Driver added successfully\", \"id\": " + driverId + "}")
@@ -42,8 +63,10 @@ public class DriverResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllDrivers() {
+        System.out.println("🔹 GET Request Received: Fetching All Drivers"); // Debugging Log
+
         List<Drivers> drivers = DriverOperations.getAllDrivers();
-        return Response.ok(gson.toJson(drivers)).build();
+        return Response.ok(new Gson().toJson(drivers)).build();
     }
 
     // ✅ Delete Driver by ID
@@ -100,5 +123,38 @@ public class DriverResource {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity("{\"message\": \"Failed to assign vehicle to driver\"}")
                 .build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDriverById(@PathParam("id") int id) {
+        Drivers driver = DriverOperations.getDriverById(id); // Fetch from drivers table
+        if (driver != null) {
+            return Response.ok(driver).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND)
+                .entity("{\"message\": \"Driver not found\"}")
+                .build();
+    }
+
+    @GET
+    @Path("/user/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDriverByUserId(@PathParam("userId") int userId) {
+        Drivers driver = DriverOperations.getDriverByUserId(userId);
+        if (driver != null) {
+            return Response.ok(driver).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND)
+                .entity("{\"message\": \"Driver not found for this user\"}")
+                .build();
+    }
+
+    @GET
+    @Path("/ping")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response testAPI() {
+        return Response.ok("Driver API is working!").build();
     }
 }
