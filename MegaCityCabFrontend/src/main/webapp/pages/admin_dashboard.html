@@ -40,40 +40,5 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 </tbody>
             </table>
         </main>
-
-        <script>
-            async function displayUsers() {
-                try {
-                    const users = await fetchUsers();  // Calls fetchUsers() from main.js
-
-                    if (!users) {
-                        console.error("❌ No users received!");
-                        return;
-                    }
-
-                    const tableBody = document.getElementById("usersTable").querySelector("tbody");
-                    tableBody.innerHTML = "";
-
-                    users.forEach(user => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                    <td>${user.id}</td>
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>${user.urole}</td>
-                    <td><button onclick="deleteUser(${user.id})">Delete</button></td>
-                `;
-                        tableBody.appendChild(row);
-                    });
-                } catch (error) {
-                    console.error("❌ Error displaying users:", error);
-                }
-            }
-
-            // ✅ Ensure function is called after DOM is loaded
-            document.addEventListener("DOMContentLoaded", () => {
-                displayUsers();
-            });
-        </script>
     </body>
 </html>

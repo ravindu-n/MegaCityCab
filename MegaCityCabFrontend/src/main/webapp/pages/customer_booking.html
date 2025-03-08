@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Book a Ride | MegaCityCab</title>
+        <link rel="stylesheet" href="../CSS/styles.css">
+        <script src="../js/main.js" defer></script>
+    </head>
+    <body onload="checkUserSession(); fetchAvailableVehicles();">
+        <header>
+            <h1>Book a Ride</h1>
+            <nav>
+                <a href="user_dashboard.html">Profile</a>
+                <a href="customer_booking.html">Book a Ride</a>
+                <a href="customer_bookings.html">My Bookings</a>
+                <button onclick="logoutUser()">Logout</button>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Book Your Ride</h2>
+            <form id="bookingForm">
+                <label for="pickupLocation">Pickup Location:</label>
+                <input type="text" id="pickupLocation" required>
+
+                <label for="dropoffLocation">Dropoff Location:</label>
+                <input type="text" id="dropoffLocation" required>
+
+                <label for="pickupTime">Pickup Time:</label>
+                <input type="datetime-local" id="pickupTime" required>
+
+                <label for="vehicle">Select Vehicle:</label>
+                <select id="vehicle" required>
+                    <option value="">Select a Vehicle</option>
+                </select>
+
+                <label for="fare">Estimated Fare ($):</label>
+                <input type="number" id="fare" required>
+
+                <button type="submit">Book Now</button>
+            </form>
+        </main>
+    </body>
+</html>

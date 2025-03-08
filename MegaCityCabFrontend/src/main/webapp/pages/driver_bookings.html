@@ -7,38 +7,39 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin Dashboard | MegaCityCab</title>
+        <title>Driver Trips | MegaCityCab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
         <script src="../js/main.js" defer></script>
     </head>
-    <body onload="checkUserSession(); fetchUsers();">
+    <body onload="checkUserSession(); fetchDriverBookings(localStorage.getItem('userId'));">
         <header>
-            <h1>Admin Dashboard</h1>
+            <h1>Driver Dashboard</h1>
             <nav>
-                <a href="admin_dashboard.html">Users</a>
-                <a href="bookings.html">Bookings</a>
-                <a href="vehicles.html">Vehicles</a>
-                <a href="drivers.html">Drivers</a>
+                <a href="driver_dashboard.html">Profile</a>
+                <a href="driver_bookings.html">My Trips</a>
                 <button onclick="logoutUser()">Logout</button>
             </nav>
         </header>
 
         <main>
-            <h2>All Users</h2>
-            <table id="usersTable">
+            <h2>My Trips</h2>
+            <table id="driverTripsTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Actions</th>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Pickup Location</th>
+                        <th>Drop-off Location</th>
+                        <th>Pickup Time</th>
+                        <th>Fare</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- User data will be inserted here dynamically -->
+                    <!-- Driver trips will be inserted dynamically -->
                 </tbody>
             </table>
         </main>
+
     </body>
 </html>

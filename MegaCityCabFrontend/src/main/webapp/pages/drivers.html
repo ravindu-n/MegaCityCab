@@ -7,13 +7,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin Dashboard | MegaCityCab</title>
+        <title>Manage Drivers | MegaCityCab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
         <script src="../js/main.js" defer></script>
     </head>
-    <body onload="checkUserSession(); fetchUsers();">
+    <body onload="checkUserSession(); fetchDrivers();">
         <header>
-            <h1>Admin Dashboard</h1>
+            <h1>Manage Drivers</h1>
             <nav>
                 <a href="admin_dashboard.html">Users</a>
                 <a href="bookings.html">Bookings</a>
@@ -24,19 +24,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         </header>
 
         <main>
-            <h2>All Users</h2>
-            <table id="usersTable">
+            <h2>All Drivers</h2>
+            <table id="driversTable">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Role</th>
+                        <th>Name</th>
+                        <th>License Number</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Vehicle</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- User data will be inserted here dynamically -->
+                    <!-- Driver details will be dynamically inserted here -->
                 </tbody>
             </table>
         </main>

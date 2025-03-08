@@ -7,13 +7,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>User Dashboard | MegaCityCab</title>
+        <title>My Bookings | MegaCityCab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
-        <script src="../js/main.js"></script>
+        <script src="../js/main.js" defer></script>
     </head>
-    <body onload="checkUserSession(); fetchUserDetails(localStorage.getItem('userId'));">
+    <body onload="checkUserSession(); fetchCustomerBookings();">
         <header>
-            <h1>Welcome to MegaCityCab</h1>
+            <h1>My Bookings</h1>
             <nav>
                 <a href="user_dashboard.html">Profile</a>
                 <a href="customer_booking.html">Book a Ride</a>
@@ -23,14 +23,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         </header>
 
         <main>
-            <h2>Your Profile</h2>
-            <table id="userProfile">
-                <tr><th>Username:</th><td id="username"></td></tr>
-                <tr><th>Email:</th><td id="email"></td></tr>
-                <tr><th>Phone:</th><td id="phone"></td></tr>
-                <tr><th>Address:</th><td id="address"></td></tr>
+            <h2>Your Bookings</h2>
+            <table id="customerBookingsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pickup</th>
+                        <th>Dropoff</th>
+                        <th>Pickup Time</th>
+                        <th>Fare</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Booking details will be inserted here -->
+                </tbody>
             </table>
         </main>
-
     </body>
 </html>
