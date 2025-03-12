@@ -6,90 +6,47 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Register - MegaCity Cab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
+        <script src="../js/main.js" defer></script>
     </head>
     <body>
         <h2>Register</h2>
         <form id="registerForm">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="email" id="email" placeholder="Email" required>
+            <!-- Username for Customer -->
+            <input type="text" id="username" placeholder="Username">
+
+            <!-- Email for Customer -->
+            <input type="email" id="email" placeholder="Email">
+
+            <!-- Name for Driver -->
+            <input type="text" id="dName" placeholder="Driver Name" style="display: none;">
+
+            <!-- License Number (Driver only) -->
+            <input type="text" id="licenseNumber" placeholder="License Number" style="display: none;">
+
+            <!-- Password (Common) -->
             <input type="password" id="password" placeholder="Password" required>
 
-            <!-- Role Selection -->
+            <!-- Role -->
             <label for="role">Select Role:</label>
             <select id="role" required onchange="toggleFields()">
                 <option value="Customer">Customer</option>
                 <option value="Driver">Driver</option>
             </select>
 
-            <!-- Common Fields for Both Customer & Driver -->
-            <div id="commonFields">
-                <input type="text" id="phone" placeholder="Phone Number" required>
-                <input type="text" id="nic" placeholder="NIC">
-                <input type="text" id="address" placeholder="Address">
-            </div>
+            <!-- Common Fields -->
+            <input type="text" id="phone" placeholder="Phone Number" required>
+            <input type="text" id="nic" placeholder="NIC" required>
+            <input type="text" id="address" placeholder="Address">
 
-            <!-- Driver-Specific Fields (Hidden Initially) -->
-            <div id="driverFields" style="display: none;">
-                <input type="text" id="licenseNumber" placeholder="License Number">
-                <label for="vehicle">Assign Vehicle (Optional):</label>
-                <select id="vehicle">
-                    <option value="">No Vehicle Assigned</option>
-                    <option value="1">Vehicle 1</option>
-                    <option value="2">Vehicle 2</option>
-                    <option value="3">Vehicle 3</option>
-                </select>
-            </div>
+            <!-- Driver Specific: Vehicle -->
+            <label for="vehicle" id="vehicleLabel" style="display: none;">Assign Vehicle (Optional):</label>
+            <select id="vehicle" style="display: none;">
+                <option value="">No Vehicle Assigned</option>
+            </select>
 
             <button type="submit">Register</button>
         </form>
-
-        <script>
-            function toggleFields() {
-                const role = document.getElementById("role").value;
-                document.getElementById("driverFields").style.display = (role === "Driver") ? "block" : "none";
-                document.getElementById("commonFields").style.display = "block"; // Always show for Customers & Drivers
-            }
-
-            document.getElementById("registerForm").addEventListener("submit", async function (event) {
-                event.preventDefault();
-
-                const role = document.getElementById("role").value;
-                const userData = {
-                    username: document.getElementById("username").value,
-                    email: document.getElementById("email").value,
-                    pword: document.getElementById("password").value,
-                    phone: document.getElementById("phone").value,
-                    nic: document.getElementById("nic").value,
-                    address: document.getElementById("address").value,
-                    urole: role
-                };
-
-                // If the user is a driver, include driver-specific fields
-                if (role === "Driver") {
-                    userData.licenseNumber = document.getElementById("licenseNumber").value;
-                    userData.vehicleId = document.getElementById("vehicle").value || null;
-                }
-
-                try {
-                    const response = await fetch("http://localhost:8080/MegaCityCabBackend/api/users/create", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify(userData)
-                    });
-
-                    const data = await response.json();
-                    alert(data.message || "Registration successful!");
-                    if (response.ok)
-                        window.location.href = "login.html";
-
-                } catch (error) {
-                    console.error("Registration Error:", error);
-                    alert("Server Error! Try again later.");
-                }
-            });
-        </script>
     </body>
 </html>

@@ -10,6 +10,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <title>Book a Ride | MegaCityCab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
         <script src="../js/main.js" defer></script>
+        <script src="../js/customer.js" defer></script>
     </head>
     <body onload="checkUserSession(); fetchAvailableVehicles();">
         <header>
@@ -25,22 +26,26 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <main>
             <h2>Book Your Ride</h2>
             <form id="bookingForm">
-                <label for="pickupLocation">Pickup Location:</label>
-                <input type="text" id="pickupLocation" required>
+                <label for="pickup_location">Pickup Location:</label>
+                <input type="text" id="pickup_location" required onchange="calculateEstimatedFare();">
 
-                <label for="dropoffLocation">Dropoff Location:</label>
-                <input type="text" id="dropoffLocation" required>
+                <label for="dropoff_location">Dropoff Location:</label>
+                <input type="text" id="dropoff_location" required onchange="calculateEstimatedFare();">
 
-                <label for="pickupTime">Pickup Time:</label>
-                <input type="datetime-local" id="pickupTime" required>
+                <label for="pickup_time">Pickup Time:</label>
+                <input type="datetime-local" id="pickup_time" required>
 
                 <label for="vehicle">Select Vehicle:</label>
-                <select id="vehicle" required>
+                <select id="vehicle" required onchange="calculateEstimatedFare();">
                     <option value="">Select a Vehicle</option>
                 </select>
 
+                <!-- ✅ Visible, readonly fields for fare and distance -->
+                <label for="distance">Estimated Distance (km):</label>
+                <input type="number" id="distance" readonly>
+
                 <label for="fare">Estimated Fare ($):</label>
-                <input type="number" id="fare" required>
+                <input type="number" id="fare" readonly>
 
                 <button type="submit">Book Now</button>
             </form>

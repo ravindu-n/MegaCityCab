@@ -9,7 +9,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>User Dashboard | MegaCityCab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
-        <script src="../js/main.js"></script>
+        <script src="../js/main.js" defer></script>
+        <script src="../js/customer.js" defer></script>
     </head>
     <body onload="checkUserSession(); fetchUserDetails(localStorage.getItem('userId'));">
         <header>
@@ -31,6 +32,5 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 <tr><th>Address:</th><td id="address"></td></tr>
             </table>
         </main>
-
     </body>
 </html>

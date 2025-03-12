@@ -6,15 +6,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login - MegaCity Cab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
     </head>
     <body>
         <h2>Login</h2>
         <form id="loginForm">
-            <input type="email" id="email" placeholder="Email" required>
+            <!-- Single Identifier Field (Email for Customer/Admin OR Driver Name for Driver) -->
+            <input type="text" id="identifier" placeholder="Email or Driver Name" required>
+
+            <!-- Password -->
             <input type="password" id="password" placeholder="Password" required>
+
+            <!-- Submit Button -->
             <button type="submit">Login</button>
         </form>
         <script src="../js/main.js"></script>

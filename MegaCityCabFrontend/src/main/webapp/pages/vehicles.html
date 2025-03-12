@@ -10,6 +10,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <title>Manage Vehicles | MegaCityCab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
         <script src="../js/main.js" defer></script>
+        <script src="../js/admin.js" defer></script>
     </head>
     <body onload="checkUserSession(); fetchVehicles();">
         <header>
@@ -46,11 +47,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <h2>Add New Vehicle</h2>
             <form id="vehicleForm">
                 <input type="text" id="model" placeholder="Model" required>
-                <input type="number" id="makeYear" placeholder="Make Year" required>
-                <input type="text" id="licensePlate" placeholder="License Plate" required>
+                <input type="number" id="make_year" placeholder="Make Year" required>
+                <input type="text" id="license_plate" placeholder="License Plate" required>
 
-                <label for="type">Type:</label>
-                <select id="type" required>
+                <label for="vType">Type:</label>
+                <select id="vType" required>
                     <option value="Sedan">Sedan</option>
                     <option value="SUV">SUV</option>
                     <option value="Van">Van</option>

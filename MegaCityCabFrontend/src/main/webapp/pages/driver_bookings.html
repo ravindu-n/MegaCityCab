@@ -5,11 +5,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 -->
 <html>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Driver Trips | MegaCityCab</title>
         <link rel="stylesheet" href="../CSS/styles.css">
         <script src="../js/main.js" defer></script>
+        <script src="../js/driver.js" defer></script>
     </head>
     <body onload="checkUserSession(); fetchDriverBookings(localStorage.getItem('userId'));">
         <header>
@@ -20,7 +19,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 <button onclick="logoutUser()">Logout</button>
             </nav>
         </header>
-
         <main>
             <h2>My Trips</h2>
             <table id="driverTripsTable">
@@ -33,13 +31,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                         <th>Pickup Time</th>
                         <th>Fare</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Driver trips will be inserted dynamically -->
+
                 </tbody>
             </table>
         </main>
-
     </body>
 </html>

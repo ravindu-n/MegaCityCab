@@ -56,10 +56,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                     bookings.forEach(booking => {
                         const row = document.createElement("tr");
                         row.innerHTML = `
-                            <td>${booking.id}</td>
+                            <td>${booking.Id}</td>
                             <td>${booking.customerName}</td>
-                            <td>${booking.pickupLocation}</td>
-                            <td>${booking.dropoffLocation}</td>
+                            <td>${booking.pickup_location}</td>
+                            <td>${booking.dropoff_location}</td>
                             <td>${booking.bStatus}</td>
                             <td><button onclick="cancelBooking(${booking.id})">Cancel</button></td>
                         `;
