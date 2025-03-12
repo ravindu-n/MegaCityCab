@@ -5,11 +5,13 @@
 package Driver;
 
 import DB.DatabaseOperation;
+import DB.PasswordHasher;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,111 +21,96 @@ import java.util.List;
  */
 public class DriverOperations {
 
-    // ✅ Add a New Driver
-    public static int addDriver(Drivers driver, int userId) {
-        String query = "INSERT INTO drivers (user_id, dName, license_number, phone, nic, dStatus, vehicle_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, userId);
-            stmt.setString(2, driver.getdName());
-            stmt.setString(3, driver.getLicenseNumber());
-            stmt.setString(4, driver.getPhone());
-            stmt.setString(5, driver.getNic());
-            stmt.setString(6, driver.getdStatus());
+    // ✅ Register Driver
+    public static boolean registerDriver(Drivers driver) {
+        // ✅ Check if vehicle is already assigned (if vehicle is selected)
+        if (driver.getVehicleId() != null && isVehicleAssigned(driver.getVehicleId())) {
+            System.out.println("❌ Vehicle already assigned to another driver.");
+            return false;
+        }
+
+        String sql = "INSERT INTO drivers (dName, license_number, phone, nic, pword, dStatus, vehicle_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, driver.getdName());
+            stmt.setString(2, driver.getLicenseNumber());
+            stmt.setString(3, driver.getPhone());
+            stmt.setString(4, driver.getNic());
+            stmt.setString(5, PasswordHasher.hashPassword(driver.getPword())); // ✅ Hashed password
+            stmt.setString(6, "Available"); // ✅ Set default status to 'Available'
             if (driver.getVehicleId() != null) {
                 stmt.setInt(7, driver.getVehicleId());
             } else {
-                stmt.setNull(7, java.sql.Types.INTEGER);
+                stmt.setNull(7, Types.INTEGER);
             }
 
-            stmt.executeUpdate();
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return -1; // Error case
     }
 
-    // ✅ Retrieve All Drivers
+    /// ✅ Corrected Driver Login by Driver Name and Password
+    public static Drivers loginDriver(String dName, String password) {
+        String sql = "SELECT * FROM drivers WHERE dName = ?";
+
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, dName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String hashedPassword = rs.getString("pword");
+                if (PasswordHasher.checkPassword(password, hashedPassword)) {
+                    return new Drivers(
+                            rs.getInt("Id"),
+                            rs.getString("dName"),
+                            rs.getString("license_number"),
+                            rs.getString("phone"),
+                            rs.getString("nic"),
+                            null, // Don't return password
+                            rs.getString("dStatus"),
+                            rs.getObject("vehicle_id") != null ? rs.getInt("vehicle_id") : null
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Keep this for debugging in console
+        }
+        return null; // Failed login
+    }
+
+    // ✅ Get All Drivers
     public static List<Drivers> getAllDrivers() {
         List<Drivers> driverList = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE urole = 'Driver'";
+        String sql = "SELECT * FROM drivers";
 
-        try (Connection conn = DatabaseOperation.connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
-
-            System.out.println("🔹 Fetching drivers...");
-
+        try (Connection conn = DatabaseOperation.connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                System.out.println("✅ Driver found: " + rs.getString("username"));
-
                 driverList.add(new Drivers(
                         rs.getInt("Id"),
-                        rs.getString("username"),
+                        rs.getString("dName"),
                         rs.getString("license_number"),
                         rs.getString("phone"),
                         rs.getString("nic"),
+                        null, // Don't return password
                         rs.getString("dStatus"),
                         rs.getObject("vehicle_id") != null ? rs.getInt("vehicle_id") : null
                 ));
             }
-
-            if (driverList.isEmpty()) {
-                System.out.println("❌ No drivers found in database.");
-            }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return driverList;
     }
 
-    // ✅ Delete a Driver by ID
-    public static int deleteDriver(int id) {
-        String query = "DELETE FROM drivers WHERE Id=?";
-        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1; // Error case
-    }
-
-    // ✅ Update Driver Status (Available, On Trip, Inactive)
-    public static boolean updateDriverStatus(int id, String status) {
-        String query = "UPDATE drivers SET dStatus=? WHERE Id=?";
-        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, status);
-            stmt.setInt(2, id);
-            int updatedRows = stmt.executeUpdate();
-            return updatedRows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; // Error case
-    }
-
-    // ✅ Assign a Driver to a Vehicle
-    public static boolean assignVehicleToDriver(int driverId, int vehicleId) {
-        String query = "UPDATE drivers SET vehicle_id=? WHERE Id=?";
-        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, vehicleId);
-            stmt.setInt(2, driverId);
-            int updatedRows = stmt.executeUpdate();
-            return updatedRows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; // Error case
-    }
-
+    // ✅ Get Driver by ID
     public static Drivers getDriverById(int id) {
-        String query = "SELECT * FROM drivers WHERE Id = ?";
-        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        String sql = "SELECT * FROM drivers WHERE Id = ?";
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
                 return new Drivers(
                         rs.getInt("Id"),
@@ -131,6 +118,7 @@ public class DriverOperations {
                         rs.getString("license_number"),
                         rs.getString("phone"),
                         rs.getString("nic"),
+                        null,
                         rs.getString("dStatus"),
                         rs.getObject("vehicle_id") != null ? rs.getInt("vehicle_id") : null
                 );
@@ -138,28 +126,37 @@ public class DriverOperations {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Driver not found
+        return null;
     }
 
-    public static Drivers getDriverByUserId(int userId) {
-        String query = "SELECT * FROM drivers WHERE user_id = ?";
-        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, userId);
+    // ✅ Delete Driver
+    public static boolean deleteDriver(int id) {
+        String sql = "DELETE FROM drivers WHERE Id = ?";
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ✅ Check if vehicle is already assigned to any driver
+    public static boolean isVehicleAssigned(int vehicleId) {
+        String sql = "SELECT COUNT(*) FROM drivers WHERE vehicle_id = ?";
+
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, vehicleId);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
-                return new Drivers(
-                        rs.getInt("Id"),
-                        rs.getString("dName"),
-                        rs.getString("license_number"),
-                        rs.getString("phone"),
-                        rs.getString("nic"),
-                        rs.getString("dStatus"),
-                        rs.getObject("vehicle_id") != null ? rs.getInt("vehicle_id") : null
-                );
+                int count = rs.getInt(1);
+                return count > 0; // ✅ Return true if assigned
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Driver not found
+        return false; // ✅ Not assigned
     }
+
 }

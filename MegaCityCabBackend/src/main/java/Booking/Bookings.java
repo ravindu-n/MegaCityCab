@@ -4,87 +4,171 @@
  */
 package Booking;
 
+import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  *
  * @author ravin
  */
 public class Bookings {
 
-    private int id;
-    private int customerId;
-    private Integer vehicleId; // Nullable
-    private String pickupLocation;
-    private String dropoffLocation;
-    private String bookingDate;
-    private String pickupTime;
-    private double fare;
+    private int Id;
+    private int customer_id;
+    private Integer driver_id;
+    private Integer vehicle_id;
+    private String pickup_location;
+    private String dropoff_location;
+    private String booking_date;
+    private String pickup_time;
+    private BigDecimal fare;
+    private BigDecimal distance; // ✅ Updated to BigDecimal
     private String bStatus;
-    private String customerName; // ✅ New field for frontend display
+    private String customerName;
 
-    // ✅ Default Constructor (Needed for JSON parsing)
-    public Bookings() {}
-
-    // ✅ Updated Constructor to match the parameters in BookingOperations.java
-    public Bookings(int id, int customerId, Integer vehicleId, String pickupLocation, 
-                    String dropoffLocation, String bookingDate, String pickupTime, 
-                    double fare, String bStatus, String customerName) {
-        this.id = id;
-        this.customerId = customerId;
-        this.vehicleId = vehicleId;
-        this.pickupLocation = pickupLocation;
-        this.dropoffLocation = dropoffLocation;
-        this.bookingDate = bookingDate;
-        this.pickupTime = pickupTime;
-        this.fare = fare;
-        this.bStatus = bStatus;
-        this.customerName = customerName; // ✅ Assigning the new field
+    // ✅ Default Constructor
+    public Bookings() {
     }
 
-    // ✅ Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // ✅ Full Constructor
+    public Bookings(int Id, int customer_id, Integer driver_id, Integer vehicle_id, String pickup_location,
+            String dropoff_location, String booking_date, String pickup_time,
+            BigDecimal fare, BigDecimal distance, String bStatus, String customerName) {
+        this.Id = Id;
+        this.customer_id = customer_id;
+        this.driver_id = driver_id;
+        this.vehicle_id = vehicle_id;
+        this.pickup_location = pickup_location;
+        this.dropoff_location = dropoff_location;
+        this.booking_date = booking_date;
+        this.pickup_time = pickup_time;
+        this.fare = fare;
+        this.distance = distance;
+        this.bStatus = bStatus;
+        this.customerName = customerName;
+    }
 
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    // ✅ ResultSet Constructor
+    public Bookings(ResultSet rs) throws SQLException {
+        this.Id = rs.getInt("Id");
+        this.customer_id = rs.getInt("customer_id");
+        this.driver_id = (Integer) rs.getObject("driver_id");
+        this.vehicle_id = (Integer) rs.getObject("vehicle_id");
+        this.pickup_location = rs.getString("pickup_location");
+        this.dropoff_location = rs.getString("dropoff_location");
+        this.booking_date = rs.getString("booking_date");
+        this.pickup_time = rs.getString("pickup_time");
+        this.fare = rs.getBigDecimal("fare");
+        this.distance = rs.getBigDecimal("distance");
+        this.bStatus = rs.getString("bStatus");
+        this.customerName = rs.getString("customerName");
+    }
 
-    public Integer getVehicleId() { return vehicleId; }
-    public void setVehicleId(Integer vehicleId) { this.vehicleId = vehicleId; }
+    // Getters & Setters
+    // ✅ Include distance
+    public int getId() {
+        return Id;
+    }
 
-    public String getPickupLocation() { return pickupLocation; }
-    public void setPickupLocation(String pickupLocation) { this.pickupLocation = pickupLocation; }
+    public void setId(int Id) {
+        this.Id = Id;
+    }
 
-    public String getDropoffLocation() { return dropoffLocation; }
-    public void setDropoffLocation(String dropoffLocation) { this.dropoffLocation = dropoffLocation; }
+    public int getCustomerId() {
+        return customer_id;
+    }
 
-    public String getBookingDate() { return bookingDate; }
-    public void setBookingDate(String bookingDate) { this.bookingDate = bookingDate; }
+    public void setCustomerId(int customer_id) {
+        this.customer_id = customer_id;
+    }
 
-    public String getPickupTime() { return pickupTime; }
-    public void setPickupTime(String pickupTime) { this.pickupTime = pickupTime; }
+    public Integer getDriverId() {
+        return driver_id;
+    }
 
-    public double getFare() { return fare; }
-    public void setFare(double fare) { this.fare = fare; }
+    public void setDriverId(Integer driver_id) {
+        this.driver_id = driver_id;
+    }
 
-    public String getbStatus() { return bStatus; }
-    public void setbStatus(String bStatus) { this.bStatus = bStatus; }
+    public Integer getVehicleId() {
+        return vehicle_id;
+    }
 
-    public String getCustomerName() { return customerName; } // ✅ Getter for customer name
-    public void setCustomerName(String customerName) { this.customerName = customerName; } // ✅ Setter for customer name
+    public void setVehicleId(Integer vehicle_id) {
+        this.vehicle_id = vehicle_id;
+    }
 
-    // ✅ Override toString() for Debugging
+    public String getPickupLocation() {
+        return pickup_location;
+    }
+
+    public void setPickupLocation(String pickup_location) {
+        this.pickup_location = pickup_location;
+    }
+
+    public String getDropoffLocation() {
+        return dropoff_location;
+    }
+
+    public void setDropoffLocation(String dropoff_location) {
+        this.dropoff_location = dropoff_location;
+    }
+
+    public String getBookingDate() {
+        return booking_date;
+    }
+
+    public void setBookingDate(String booking_date) {
+        this.booking_date = booking_date;
+    }
+
+    public String getPickupTime() {
+        return pickup_time;
+    }
+
+    public void setPickupTime(String pickup_time) {
+        this.pickup_time = pickup_time;
+    }
+
+    public BigDecimal getFare() {
+        return fare;
+    }
+
+    public void setFare(BigDecimal fare) {
+        this.fare = fare;
+    }
+
+    public BigDecimal getDistance() {
+        return distance;
+    }
+
+    public void setDistance(BigDecimal distance) {
+        this.distance = distance;
+    }
+
+    public String getbStatus() {
+        return bStatus;
+    }
+
+    public void setbStatus(String bStatus) {
+        this.bStatus = bStatus;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    // ✅ toString
     @Override
     public String toString() {
-        return "Bookings{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", vehicleId=" + vehicleId +
-                ", pickupLocation='" + pickupLocation + '\'' +
-                ", dropoffLocation='" + dropoffLocation + '\'' +
-                ", bookingDate='" + bookingDate + '\'' +
-                ", pickupTime='" + pickupTime + '\'' +
-                ", fare=" + fare +
-                ", bStatus='" + bStatus + '\'' +
-                ", customerName='" + customerName + '\'' +
-                '}';
+        return "Bookings{" + "id=" + Id + ", customerId=" + customer_id + ", driverId=" + driver_id
+                + ", vehicleId=" + vehicle_id + ", pickupLocation=" + pickup_location + ", dropoffLocation=" + dropoff_location
+                + ", bookingDate=" + booking_date + ", pickupTime=" + pickup_time + ", fare=" + fare
+                + ", distance=" + distance + ", bStatus=" + bStatus + ", customerName=" + customerName + '}';
     }
 }

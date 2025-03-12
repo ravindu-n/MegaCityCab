@@ -111,4 +111,27 @@ public class VehicleOperations {
         }
         return false; // Error case
     }
+
+    // ✅ Fetch vehicle by ID
+    public static Vehicles getVehicleById(int vehicleId) {
+        String query = "SELECT * FROM vehicles WHERE Id = ?";
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, vehicleId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Vehicles(
+                        rs.getInt("Id"),
+                        rs.getString("model"),
+                        rs.getInt("make_year"),
+                        rs.getString("license_plate"),
+                        rs.getString("vType"),
+                        rs.getInt("capacity"),
+                        rs.getString("vStatus")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

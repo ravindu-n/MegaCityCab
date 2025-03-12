@@ -12,8 +12,8 @@ public class Vehicles {
 
     private int id;
     private String model;
-    private int makeYear;
-    private String licensePlate;
+    private int make_year;
+    private String license_plate;
     private String vType;
     private int capacity;
     private String vStatus;
@@ -23,11 +23,11 @@ public class Vehicles {
     }
 
     // ✅ Constructor with All Fields
-    public Vehicles(int id, String model, int makeYear, String licensePlate, String vType, int capacity, String vStatus) {
+    public Vehicles(int id, String model, int make_year, String license_plate, String vType, int capacity, String vStatus) {
         this.id = id;
         this.model = model;
-        this.makeYear = makeYear;  // Ensure this is included
-        this.licensePlate = licensePlate;
+        this.make_year = make_year;  // Ensure this is included
+        this.license_plate = license_plate;
         this.vType = vType;
         this.capacity = capacity;
         this.vStatus = vStatus;
@@ -51,19 +51,19 @@ public class Vehicles {
     }
 
     public int getMakeYear() {
-        return makeYear;
+        return make_year;
     }
 
     public void setMakeYear(int makeYear) {
-        this.makeYear = makeYear;
+        this.make_year = makeYear;
     }
 
     public String getLicensePlate() {
-        return licensePlate;
+        return license_plate;
     }
 
     public void setLicensePlate(String licensePlate) {
-        this.licensePlate = licensePlate;
+        this.license_plate = licensePlate;
     }
 
     public String getType() {
@@ -96,8 +96,8 @@ public class Vehicles {
         return "Vehicles{"
                 + "id=" + id
                 + ", model='" + model + '\''
-                + ", makeYear=" + makeYear
-                + ", licensePlate='" + licensePlate + '\''
+                + ", makeYear=" + make_year
+                + ", licensePlate='" + license_plate + '\''
                 + ", type='" + vType + '\''
                 + ", capacity=" + capacity
                 + ", status='" + vStatus + '\''

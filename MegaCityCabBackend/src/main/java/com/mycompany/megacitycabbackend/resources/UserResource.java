@@ -7,7 +7,6 @@ package com.mycompany.megacitycabbackend.resources;
 import User.UserOperations;
 import User.Users;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,32 +21,40 @@ public class UserResource {
 
     private final Gson gson = new Gson();
 
-    // ✅ Create User
+    // ✅ Register (Customer/Admin)
     @POST
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(String json) {
-        Users user = gson.fromJson(json, Users.class);
-        int userId = UserOperations.addAccount(user);
-        if (userId > 0) {
-            return Response.status(Response.Status.CREATED)
-                    .entity("{\"message\": \"User created successfully\", \"id\": " + userId + "}")
-                    .build();
+    public Response registerUser(Users user) {
+        boolean success = UserOperations.registerUser(user);
+        if (success) {
+            return Response.ok("{\"message\": \"User registered successfully!\"}").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\": \"Failed to register user.\"}").build();
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("{\"message\": \"Failed to create user\"}")
-                .build();
     }
 
-    @GET
+    // ✅ Login
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsers() {
-        List<Users> users = UserOperations.getAllAccounts();
-        for (Users user : users) {
-            user.setPword(null); // Hide password
+    public Response loginUser(Users loginData) {
+        Users user = UserOperations.loginUser(loginData.getEmail(), loginData.getPword());
+        if (user != null) {
+            return Response.ok(user).build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\": \"Invalid email or password.\"}").build();
         }
-        return Response.ok(new Gson().toJson(users)).build();
+    }
+
+    // ✅ Get All Users (Admin Only)
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Users> getAllUsers() {
+        return UserOperations.getAllUsers();
     }
 
     // ✅ Get User by ID
@@ -57,12 +64,10 @@ public class UserResource {
     public Response getUserById(@PathParam("id") int id) {
         Users user = UserOperations.getUserById(id);
         if (user != null) {
-            user.setPword(null); // Remove password for security
-            return Response.ok(new Gson().toJson(user)).build();
+            return Response.ok(user).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"message\": \"User not found.\"}").build();
         }
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity("{\"message\": \"User not found\"}")
-                .build();
     }
 
     // ✅ Delete User
@@ -70,45 +75,30 @@ public class UserResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") int id) {
-        int deleted = UserOperations.deleteAccount(id);
-        if (deleted > 0) {
-            return Response.ok("{\"message\": \"User deleted successfully\"}").build();
+        boolean success = UserOperations.deleteUser(id);
+        if (success) {
+            return Response.ok("{\"message\": \"User deleted successfully.\"}").build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"message\": \"Failed to delete user.\"}").build();
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("{\"message\": \"Failed to delete user\"}")
-                .build();
     }
 
-    // ✅ User Login
-    @POST
-    @Path("/login")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Users> getAllUsersDefault() {
+        return UserOperations.getAllUsers();
+    }
+
+    @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response validateLogin(String json) {
-        System.out.println("🔹 Received Login Request: " + json);
-
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(json, JsonObject.class); // Use JsonObject to extract fields
-
-        String email = jsonObject.has("email") ? jsonObject.get("email").getAsString() : null;
-        String password = jsonObject.has("password") ? jsonObject.get("password").getAsString() : null; // 🔹 Change to "password"
-
-        if (email == null || password == null) {
-            System.out.println("❌ Missing email or password");
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"message\": \"Email and Password are required!\"}")
-                    .build();
-        }
-
-        Users validUser = UserOperations.validateLogin(email, password);
-
-        if (validUser != null) {
-            return Response.ok("{\"message\": \"Login successful!\", \"id\": " + validUser.getId()
-                    + ", \"urole\": \"" + validUser.getUrole().trim() + "\"}").build();
+    public Response updateUser(@PathParam("id") int id, Users user) {
+        boolean success = UserOperations.updateUser(id, user);
+        if (success) {
+            return Response.ok("{\"message\": \"User updated successfully.\"}").build();
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"message\": \"Invalid email or password!\"}")
-                    .build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\": \"Failed to update user.\"}").build();
         }
     }
 }
