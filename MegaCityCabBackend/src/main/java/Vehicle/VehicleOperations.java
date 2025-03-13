@@ -86,6 +86,52 @@ public class VehicleOperations {
         return vehicleList;
     }
 
+    // ✅ Fetch vehicles not assigned to any driver
+    public static List<Vehicles> getAvailableVehiclesForDriver() {
+        List<Vehicles> vehicles = new ArrayList<>();
+        String query = "SELECT * FROM vehicles WHERE Id NOT IN (SELECT vehicle_id FROM drivers WHERE vehicle_id IS NOT NULL) AND vStatus = 'Available'";
+
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Vehicles v = new Vehicles(
+                        rs.getInt("Id"),
+                        rs.getString("model"),
+                        rs.getInt("make_year"),
+                        rs.getString("license_plate"),
+                        rs.getString("vType"),
+                        rs.getInt("capacity"),
+                        rs.getString("vStatus")
+                );
+                vehicles.add(v);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vehicles;
+    }
+
+    public static boolean updateVehicle(Vehicles vehicle) {
+        String query = "UPDATE vehicles SET model = ?, make_year = ?, license_plate = ?, vType = ?, capacity = ?, vStatus = ? WHERE id = ?";
+        try (Connection conn = DatabaseOperation.connect(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, vehicle.getModel());
+            stmt.setInt(2, vehicle.getMakeYear());
+            stmt.setString(3, vehicle.getLicensePlate());
+            stmt.setString(4, vehicle.getType());
+            stmt.setInt(5, vehicle.getCapacity());
+            stmt.setString(6, vehicle.getStatus());
+            stmt.setInt(7, vehicle.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // ✅ Delete a Vehicle by ID
     public static int deleteVehicle(int id) {
         String query = "DELETE FROM vehicles WHERE Id=?";

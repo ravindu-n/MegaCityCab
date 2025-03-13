@@ -67,6 +67,32 @@ public class VehicleResource {
         }
     }
 
+    @GET
+    @Path("/availableForDriver")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableVehiclesForDriver() {
+        List<Vehicles> vehicles = VehicleOperations.getAvailableVehiclesForDriver();
+        return Response.ok(gson.toJson(vehicles)).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateVehicle(@PathParam("id") int id, String json) {
+        Vehicles updatedVehicle = gson.fromJson(json, Vehicles.class);
+        updatedVehicle.setId(id); // Set ID properly from path
+
+        boolean isUpdated = VehicleOperations.updateVehicle(updatedVehicle);
+        if (isUpdated) {
+            return Response.ok("{\"message\": \"Vehicle updated successfully!\"}").build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\": \"Failed to update vehicle.\"}")
+                    .build();
+        }
+    }
+
     // ✅ Delete Vehicle by ID
     @DELETE
     @Path("/{id}")
