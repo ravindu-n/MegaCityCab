@@ -64,5 +64,39 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 <button type="submit">Add Vehicle</button>
             </form>
         </main>
+        <!-- ✅ Edit Vehicle Modal -->
+        <div id="editVehicleModal" class="modal">
+            <div class="modal-content">
+                <span onclick="closeEditVehicleModal()" class="close">&times;</span>
+                <h2>Edit Vehicle</h2>
+                <form id="editVehicleForm">
+                    <input type="hidden" id="editVehicleId">
+                    <input type="text" id="editVehiclemodel" required>
+                    <input type="number" id="editmake_year" required>
+                    <input type="text" id="editlicense_plate" required>
+
+                    <label>Type:</label>
+                    <select id="editvType" required>
+                        <option value="Sedan">Sedan</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Van">Van</option>
+                        <option value="Hatchback">Hatchback</option>
+                        <option value="Luxury">Luxury</option>
+                    </select>
+
+                    <input type="number" id="editcapacity" required>
+
+                    <label>Status:</label>
+                    <select id="editvStatus" required>
+                        <option value="Available">Available</option>
+                        <option value="Booked">Booked</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+
+                    <button type="submit">Update Vehicle</button>
+                </form>
+            </div>
+        </div>
+
     </body>
 </html>

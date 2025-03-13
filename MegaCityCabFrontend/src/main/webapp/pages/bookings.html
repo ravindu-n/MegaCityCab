@@ -33,7 +33,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                         <th>Pickup Location</th>
                         <th>Dropoff Location</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,7 +60,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                             <td>${booking.pickup_location}</td>
                             <td>${booking.dropoff_location}</td>
                             <td>${booking.bStatus}</td>
-                            <td><button onclick="cancelBooking(${booking.id})">Cancel</button></td>
                         `;
                         tableBody.appendChild(row);
                     });

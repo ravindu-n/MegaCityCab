@@ -140,7 +140,10 @@ async function fetchVehicles() {
                 <td>${vehicle.vType}</td>
                 <td>${vehicle.capacity}</td>
                 <td>${vehicle.vStatus}</td>
-                <td><button onclick="deleteVehicle(${vehicle.id})">Delete</button></td>
+                <td>
+                    <button onclick="openEditVehicleModal(${vehicle.id}, '${vehicle.model}', '${vehicle.make_year}', '${vehicle.license_plate}', '${vehicle.vType}', '${vehicle.capacity}', '${vehicle.vStatus}')">Edit</button>
+                    <button onclick="deleteVehicle(${vehicle.id})">Delete</button>
+                </td>
             `;
             tableBody.appendChild(row);
         });
@@ -268,3 +271,64 @@ async function deleteDriver(driverId) {
         alert("❌ Server error! Please try again later.");
     }
 }
+
+// ✅ Open Modal to Edit Customer
+function openEditVehicleModal(id, model, make_year, license_plate, vType, capacity, vStatus) {
+    document.getElementById("editVehicleId").value = id; // ✅ THIS MUST HAVE VALUE
+    document.getElementById("editVehiclemodel").value = model;
+    document.getElementById("editmake_year").value = make_year;
+    document.getElementById("editlicense_plate").value = license_plate;
+    document.getElementById("editvType").value = vType;
+    document.getElementById("editcapacity").value = capacity;
+    document.getElementById("editvStatus").value = vStatus;
+    document.getElementById("editVehicleModal").style.display = "block";
+}
+
+// ✅ Close Modal
+function closeEditVehicleModal() {
+    document.getElementById("editVehicleModal").style.display = "none";
+}
+
+const editVehicleForm = document.getElementById("editVehicleForm");
+
+if (editVehicleForm) {
+    editVehicleForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const vehicleId = document.getElementById("editVehicleId").value;
+        const updatedData = {
+            model: document.getElementById("editVehiclemodel").value.trim(),
+            make_year: document.getElementById("editmake_year").value.trim(),
+            license_plate: document.getElementById("editlicense_plate").value.trim(),
+            vType: document.getElementById("editvType").value.trim(),
+            capacity: document.getElementById("editcapacity").value.trim(),
+            vStatus: document.getElementById("editvStatus").value.trim()
+        };
+
+        console.log("🚀 Updating Vehicle:", updatedData);
+
+        try {
+            const response = await fetch(`${VEHICLES_API}/${vehicleId}`, {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(updatedData)
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert("✅ Vehicle updated successfully!");
+                closeEditVehicleModal();
+                fetchVehicles(); // Refresh list
+            } else {
+                alert(data.message || "❌ Failed to update vehicle.");
+            }
+        } catch (error) {
+            console.error("❌ Error updating vehicle:", error);
+            alert("❌ Server error! Please try again later.");
+        }
+    });
+}
+
+// ✅ Expose Modal Functions
+window.openEditVehicleModal = openEditVehicleModal;
+window.closeEditVehicleModal = closeEditVehicleModal;

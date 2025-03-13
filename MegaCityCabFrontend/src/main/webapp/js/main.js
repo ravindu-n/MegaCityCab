@@ -11,6 +11,7 @@
 const BASE_USER_URL = "http://localhost:8080/MegaCityCabBackend/api/users";
 const BASE_DRIVER_URL = "http://localhost:8080/MegaCityCabBackend/api/drivers";
 const VEHICLES_API = "http://localhost:8080/MegaCityCabBackend/api/vehicles";
+const BASE_VEHICLE_URL = "http://localhost:8080/MegaCityCabBackend/api/vehicles";
 
 // ✅ DOM Ready for Login and Registration
 document.addEventListener("DOMContentLoaded", () => {
@@ -24,11 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (registerForm) {
         registerForm.addEventListener("submit", handleRegistration);
         toggleFields();
-        fetchAvailableVehicles();
+        fetchAvailableVehiclesForDriver();
     }
 });
 
-// ✅ Handle Unified Login for Customer/Admin/Driver
+// ✅ Fully Fixed Login Handler
 async function handleLogin(event) {
     event.preventDefault();
 
@@ -36,40 +37,47 @@ async function handleLogin(event) {
     const password = document.getElementById("password").value.trim();
 
     try {
-        // Try Customer/Admin login first
-        let response = await fetch(`${BASE_USER_URL}/login`, {
+        // ✅ First attempt - Customer/Admin Login
+        let userResponse = await fetch(`${BASE_USER_URL}/login`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({email: identifier, pword: password})
         });
 
-        if (response.ok) {
-            const user = await response.json();
+        if (userResponse.ok) {
+            const user = await userResponse.json();
+            alert("✅ Login Successfully!");
             handleSuccessfulLogin(user, user.urole);
             return;
+        } else {
+            console.log("Customer/Admin login failed. Trying Driver login...");
         }
 
-        // If not found, try Driver login by dName
-        response = await fetch(`${BASE_DRIVER_URL}/login`, {
+        // ✅ Second attempt - Driver Login
+        let driverResponse = await fetch(`${BASE_DRIVER_URL}/login`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({dName: identifier, pword: password})
         });
 
-        if (response.ok) {
-            const driver = await response.json();
+        if (driverResponse.ok) {
+            const driver = await driverResponse.json();
+            alert("✅ Login Successfully!");
             handleSuccessfulLogin(driver, "Driver");
+            return;
         } else {
-            alert("❌ Invalid credentials. Please try again.");
+            console.log("Driver login failed.");
         }
 
+        // ❌ If both fail
+        alert("❌ Invalid credentials. Please try again.");
+
     } catch (error) {
-        console.error("❌ Login Error:", error);
-        alert("❌ Server error during login.");
+        console.error("❌ Error during login:", error);
+        alert("❌ Server error during login. Please try again later.");
     }
 }
 
-// ✅ Successful Login Handler
 function handleSuccessfulLogin(user, role) {
     console.log("✅ Logged in:", user);
     localStorage.setItem("userId", user.id);
@@ -272,3 +280,115 @@ async function fetchAvailableVehicles() {
         alert("❌ Failed to load available vehicles. Please try again later.");
     }
 }
+
+// ✅ Fetch Unassigned Vehicles for Driver Registration (For register.html)
+async function fetchAvailableVehiclesForDriver() {
+    const dropdown = document.getElementById("vehicle");
+    if (!dropdown)
+        return;
+
+    try {
+        const response = await fetch(`${VEHICLES_API}/availableForDriver`);
+        const vehicles = await response.json();
+
+        dropdown.innerHTML = ""; // Clear dropdown
+
+        if (vehicles.length === 0) {
+            // 🚫 No vehicles available
+            const option = document.createElement("option");
+            option.value = ""; // No value
+            option.textContent = "No vacancies for drivers"; // Message
+            option.disabled = true; // Make it unselectable
+            dropdown.appendChild(option);
+        } else {
+            // ✅ Vehicles available
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "No Vehicle Assigned (Optional)";
+            dropdown.appendChild(defaultOption);
+
+            vehicles.forEach(v => {
+                const option = document.createElement("option");
+                option.value = v.id;
+                option.textContent = `${v.model} (${v.license_plate})`;
+                dropdown.appendChild(option);
+            });
+        }
+
+    } catch (error) {
+        console.error("❌ Error fetching available vehicles for drivers:", error);
+    }
+}
+
+function openUserGuideModal() {
+    document.getElementById("userGuideModal").style.display = "block";
+}
+
+function closeUserGuideModal() {
+    document.getElementById("userGuideModal").style.display = "none";
+}
+
+// Close modal when clicking outside the modal content
+window.onclick = function (event) {
+    const modal = document.getElementById("userGuideModal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Function to dynamically fetch and display vehicles on index.html
+async function fetchAndDisplayVehicles() {
+    const container = document.getElementById("vehicleList");
+    container.innerHTML = "<p>Loading vehicles...</p>";
+
+    try {
+        const response = await fetch(`${BASE_VEHICLE_URL}/`);
+        if (!response.ok)
+            throw new Error("Failed to fetch vehicles");
+
+        const vehicles = await response.json();
+        console.log("🚗 Vehicles Fetched:", vehicles);
+
+        if (vehicles.length === 0) {
+            container.innerHTML = "<p>No vehicles available at the moment.</p>";
+            return;
+        }
+
+        container.innerHTML = ""; // Clear loading message
+
+        vehicles.forEach(vehicle => {
+            const vehicleCard = document.createElement("div");
+            vehicleCard.className = "vehicle-card";
+
+            // ✅ Proper sanitization to match file names
+            const imageName = vehicle.model.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_');
+            const imagePath = `images/${imageName}.jpg`;
+
+            vehicleCard.innerHTML = `
+                <img src="${imagePath}" alt="${vehicle.model}" onerror="this.onerror=null;this.src='images/no_image.jpg';">
+                <h3>${vehicle.model} (${vehicle.vType})</h3>
+                <p><strong>Capacity:</strong> ${vehicle.capacity} persons</p>
+                <p><strong>License Plate:</strong> ${vehicle.license_plate}</p>
+                <p><strong>Status:</strong> ${vehicle.vStatus}</p>
+            `;
+            container.appendChild(vehicleCard);
+        });
+
+    } catch (error) {
+        console.error("❌ Error fetching vehicles:", error);
+        container.innerHTML = "<p>Failed to load vehicles. Please try again later.</p>";
+    }
+}
+
+// Modal control
+function openUserGuideModal() {
+    document.getElementById("userGuideModal").style.display = "block";
+}
+
+function closeUserGuideModal() {
+    document.getElementById("userGuideModal").style.display = "none";
+}
+
+window.fetchAndDisplayVehicles = fetchAndDisplayVehicles;
+window.openUserGuideModal = openUserGuideModal;
+window.closeUserGuideModal = closeUserGuideModal;

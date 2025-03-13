@@ -6,18 +6,45 @@
         <title>MegaCity Cab</title>
         <link rel="stylesheet" href="CSS/styles.css">
     </head>
-    <body>
+    <body onload="fetchAndDisplayVehicles()">
         <header>
             <h1>Welcome to MegaCity Cab</h1>
             <nav>
                 <a href="pages/login.html">Login</a>
                 <a href="pages/register.html">Register</a>
+                <button onclick="openUserGuideModal()" class="guide-btn">User Guide</button>
             </nav>
         </header>
         <main>
             <h2>Book Your Ride Easily!</h2>
             <p>Fast, reliable, and secure cab booking system.</p>
         </main>
+
+        <h2>Available Vehicles</h2>
+        <div id="vehicleList" class="vehicle-container">
+            <!-- Vehicles will be dynamically inserted here -->
+        </div>
+
+        <!-- ✅ User Guide Modal -->
+        <div id="userGuideModal" class="modal">
+            <div class="modal-content">
+                <span onclick="closeUserGuideModal()" class="close">&times;</span>
+                <h2>User Guide</h2>
+                <h3>For Customers:</h3>
+                <ul>
+                    <li>Register as a Customer via the Register page.</li>
+                    <li>Login using your Email and Password.</li>
+                    <li>Book a ride using the "Book a Ride" option.</li>
+                    <li>View your bookings under "My Bookings".</li>
+                </ul>
+                <h3>For Drivers:</h3>
+                <ul>
+                    <li>Register as a Driver (optional vehicle assignment).</li>
+                    <li>Login using your Driver Name and Password.</li>
+                    <li>View and manage trips under "My Trips".</li>
+                </ul>
+            </div>
+        </div>
         <script src="js/main.js"></script>
     </body>
 </html>
