@@ -368,8 +368,6 @@ async function fetchAndDisplayVehicles() {
                 <img src="${imagePath}" alt="${vehicle.model}" onerror="this.onerror=null;this.src='images/no_image.jpg';">
                 <h3>${vehicle.model} (${vehicle.vType})</h3>
                 <p><strong>Capacity:</strong> ${vehicle.capacity} persons</p>
-                <p><strong>License Plate:</strong> ${vehicle.license_plate}</p>
-                <p><strong>Status:</strong> ${vehicle.vStatus}</p>
             `;
             container.appendChild(vehicleCard);
         });
@@ -392,3 +390,13 @@ function closeUserGuideModal() {
 window.fetchAndDisplayVehicles = fetchAndDisplayVehicles;
 window.openUserGuideModal = openUserGuideModal;
 window.closeUserGuideModal = closeUserGuideModal;
+
+function togglePassword() {
+    const passwordField = document.getElementById('password');
+    const showPasswordCheckbox = document.getElementById('showPassword');
+    if (showPasswordCheckbox.checked) {
+        passwordField.type = 'text';
+    } else {
+        passwordField.type = 'password';
+    }
+}

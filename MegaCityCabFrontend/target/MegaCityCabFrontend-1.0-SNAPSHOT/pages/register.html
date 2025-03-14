@@ -34,6 +34,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <!-- Password (Common) -->
             <input type="password" id="password" placeholder="Password" required>
 
+            <!-- Show Password Checkbox (on same line) -->
+            <div class="checkbox-container">
+                <input type="checkbox" id="showPassword" onchange="togglePassword()">
+                <label for="showPassword">Show Password</label>
+            </div>
+
             <!-- Role -->
             <label for="role">Select Role:</label>
             <select id="role" required onchange="toggleFields()">

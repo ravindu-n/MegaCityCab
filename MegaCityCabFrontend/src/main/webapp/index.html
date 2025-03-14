@@ -3,29 +3,195 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>MegaCity Cab</title>
+        <title>MegaCity Cab - Your Trusted Ride Partner</title>
         <link rel="stylesheet" href="CSS/styles.css">
+        <!-- FontAwesome for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     </head>
     <body onload="fetchAndDisplayVehicles()">
         <header>
-            <h1>Welcome to MegaCity Cab</h1>
+            <h1>MegaCity Cab</h1>
             <nav>
                 <a href="pages/login.html">Login</a>
                 <a href="pages/register.html">Register</a>
                 <button onclick="openUserGuideModal()" class="guide-btn">User Guide</button>
             </nav>
         </header>
+
         <main>
-            <h2>Book Your Ride Easily!</h2>
-            <p>Fast, reliable, and secure cab booking system.</p>
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h2>Your Ride, Your Way</h2>
+                <p>Fast, reliable, and secure cab booking system for the modern city dweller</p>
+
+                <div class="hero-buttons">
+                    <a href="pages/register.html" class="hero-cta hero-secondary">Sign Up</a>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section">
+                <h2 class="section-header">Why Choose MegaCity Cab?</h2>
+
+                <div class="features-container">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="feature-title">Quick Booking</h3>
+                        <p>Book your ride in seconds with our streamlined process</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Safe & Secure</h3>
+                        <p>All drivers verified and trips monitored for your safety</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <h3 class="feature-title">Best Prices</h3>
+                        <p>Competitive rates with no hidden charges or surge pricing</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="feature-title">24/7 Service</h3>
+                        <p>Rides available round the clock, whenever you need them</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vehicles Section -->
+            <section class="vehicles-section">
+                <h2 class="section-header">Our Fleet</h2>
+                <p class="text-center mb-lg">Choose from our wide range of quality vehicles for your perfect ride</p>
+
+                <div id="vehicleList" class="vehicle-container">
+                    <!-- Vehicles will be dynamically inserted here -->
+
+                    <!-- Example static vehicle for visualization during development -->
+                     <div class="vehicle-card">
+                        <span class="vehicle-tag">Popular</span>
+                        <img src="images/sedan.jpg" alt="Sedan" class="vehicle-image">
+                        <div class="vehicle-info">
+                            <h3 class="vehicle-title">Comfort Sedan</h3>
+                            <div class="vehicle-details">
+                                <div class="vehicle-feature">
+                                    <i class="fas fa-user"></i> 4 Passengers
+                                </div>
+                                <div class="vehicle-feature">
+                                    <i class="fas fa-suitcase"></i> 2 Luggage
+                                </div>
+                                <div class="vehicle-feature">
+                                    <i class="fas fa-snowflake"></i> Air Conditioned
+                                </div>
+                            </div>
+                            <div class="vehicle-price">$25 <span class="text-medium">/ ride</span></div>
+                            <a href="pages/booking.html" class="book-btn">Book Now</a>
+                        </div>
+                    </div> 
+                </div>
+            </section>
+
+            <!-- Testimonials Section -->
+            <section class="testimonials-section">
+                <h2 class="section-header">What Our Customers Say</h2>
+
+                <div class="testimonials-container">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">MegaCity Cab has been my go-to for daily commutes. Always on time and professional drivers!</p>
+                        <div class="testimonial-author">
+                            <img src="images/default-avatar.jpg" alt="Customer" class="testimonial-avatar">
+                            <div class="testimonial-info">
+                                <span class="testimonial-name">Sarah Johnson</span>
+                                <span class="testimonial-role">Regular Customer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">The booking system is so easy to use. I can get a ride within minutes even during peak hours.</p>
+                        <div class="testimonial-author">
+                            <img src="images/default-avatar.jpg" alt="Customer" class="testimonial-avatar">
+                            <div class="testimonial-info">
+                                <span class="testimonial-name">Michael Chang</span>
+                                <span class="testimonial-role">Business Traveler</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">I love the variety of vehicles available. Perfect for both solo trips and family outings!</p>
+                        <div class="testimonial-author">
+                            <img src="images/default-avatar.jpg" alt="Customer" class="testimonial-avatar">
+                            <div class="testimonial-info">
+                                <span class="testimonial-name">Amanda Peters</span>
+                                <span class="testimonial-role">Family User</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
 
-        <h2>Available Vehicles</h2>
-        <div id="vehicleList" class="vehicle-container">
-            <!-- Vehicles will be dynamically inserted here -->
-        </div>
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>MegaCity Cab</h3>
+                    <p>Your trusted ride partner for all your transportation needs in the city. Available 24/7, rain or shine.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
 
-        <!-- ✅ User Guide Modal -->
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="pages/booking.html">Book a Ride</a>
+                        <a href="pages/vehicles.html">Our Fleet</a>
+                        <a href="pages/pricing.html">Pricing</a>
+                        <a href="pages/about.html">About Us</a>
+                        <a href="pages/contact.html">Contact Us</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <div class="footer-links">
+                        <a href="#">City Rides</a>
+                        <a href="#">Airport Transfers</a>
+                        <a href="#">Corporate Travel</a>
+                        <a href="#">Event Transportation</a>
+                        <a href="#">Package Delivery</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <div class="footer-links">
+                        <a href="tel:+1234567890"><i class="fas fa-phone-alt"></i> (123) 456-7890</a>
+                        <a href="mailto:info@megacitycab.com"><i class="fas fa-envelope"></i> info@megacitycab.com</a>
+                        <a href="#"><i class="fas fa-map-marker-alt"></i> 123 Urban Street, MegaCity</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 MegaCity Cab. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <!-- User Guide Modal -->
         <div id="userGuideModal" class="modal">
             <div class="modal-content">
                 <span onclick="closeUserGuideModal()" class="close">&times;</span>
@@ -45,6 +211,58 @@
                 </ul>
             </div>
         </div>
+
+        <!-- JavaScript to handle vehicle data and modal functionality -->
         <script src="js/main.js"></script>
+
+        <!-- You may need to modify your JavaScript to handle the enhanced UI -->
+        <script>
+                    // Additional JS for new features if needed
+                    // This is a placeholder and might need to be customized based on your main.js file
+
+                    // Example of how to enhance your vehicle display function
+                    function enhancedDisplayVehicles(vehicles) {
+                        const vehicleList = document.getElementById('vehicleList');
+                        vehicleList.innerHTML = '';
+
+                        vehicles.forEach(vehicle => {
+                            const vehicleCard = document.createElement('div');
+                            vehicleCard.className = 'vehicle-card';
+
+                            // Add popular tag to certain vehicles
+                            if (vehicle.isPopular) {
+                                const tag = document.createElement('span');
+                                tag.className = 'vehicle-tag';
+                                tag.textContent = 'Popular';
+                                vehicleCard.appendChild(tag);
+                            }
+
+                            // Create the rest of the card
+                            vehicleCard.innerHTML += `
+                        <img src="${vehicle.image || 'images/no_image.jpg'}" alt="${vehicle.name}" class="vehicle-image">
+                        <div class="vehicle-info">
+                            <h3 class="vehicle-title">${vehicle.name}</h3>
+                            <div class="vehicle-details">
+                                <div class="vehicle-feature">
+                                    <i class="fas fa-user"></i> ${vehicle.capacity} Passengers
+                                </div>
+                                <div class="vehicle-feature">
+                                    <i class="fas fa-suitcase"></i> ${vehicle.luggage} Luggage
+                                </div>
+                                <div class="vehicle-feature">
+                                    <i class="fas fa-${vehicle.ac ? 'snowflake' : 'fan'}""></i> ${vehicle.ac ? 'Air Conditioned' : 'Fan Cooling'}
+                                </div>
+                            </div>
+                            <div class="vehicle-price">$${vehicle.price} <span class="text-medium">/ ride</span></div>
+                            <a href="pages/booking.html?vehicle=${vehicle.id}" class="book-btn">Book Now</a>
+                        </div>
+                    `;
+
+                            vehicleList.appendChild(vehicleCard);
+                        });
+                    }
+
+                    // You may need to modify your fetchAndDisplayVehicles function to use this enhanced display
+        </script>
     </body>
 </html>
